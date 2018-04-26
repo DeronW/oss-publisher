@@ -22,7 +22,7 @@ depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/a
 2. 把准备好的目录放在 seat 目录下
 3. 执行上传命令
     
-    python publisher.py --bucket=xxx --dir=xxx [--cover]
+    python publisher.py --env=xxx --dir=xxx [--cover]
 
 4. 等待执行
 5. 结束
