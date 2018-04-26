@@ -2,6 +2,7 @@ import sys
 import os
 import settings
 import oss2
+import shutil
 
 BUCKET = None
 COVER = False
@@ -74,7 +75,7 @@ def show_log():
     def echo(arr):
         for i in arr:
             print('  +', i)
-    
+
     print('success files: %s' % len(success_files))
     echo(success_files)
 
@@ -85,10 +86,24 @@ def show_log():
     echo(duplicated_files)
 
     print('failed files: %s' % len(failed_files))
-    echo(failed_files) 
+    echo(failed_files)
+
+def clean():
+    path = os.path.join(SEAT, DIRECTORY)
+    shutil.rmtree(path)
+    print('Clean up: %s' % path)
+
+def main():
+    try:
+        config(settings.__getattribute__(ENV))
+        # traverse_files()
+        sync()
+        show_log()
+    except Exception as e:
+        raise e
+    finally:
+        clean()
 
 if __name__ == '__main__':
-    config(settings.__getattribute__(ENV))
-    # traverse_files()
-    sync()
-    show_log()
+    main()
+
