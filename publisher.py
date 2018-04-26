@@ -39,7 +39,8 @@ def sync():
     for root, dirs, files in os.walk(SEAT):
         for name in files:
             k = os.path.join(root, name).replace(SEAT, '', 1)
-            keys.append(k)
+            if k.startswith(DIRECTORY):
+                keys.append(k)
 
     for key in keys:
         if check(key):
