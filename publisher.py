@@ -7,6 +7,7 @@ BUCKET = None
 COVER = False
 SEAT = './seat/'
 DIRECTORY = None
+ENV = None
 
 success_files = []
 covered_files = []
@@ -18,6 +19,13 @@ for i in sys.argv:
         COVER = True
     if i.startswith('--dir='):
         DIRECTORY = i[6:]
+    if i.startswith('--env='):
+        ENV = i[6:]
+
+if ENV is None:
+    raise '--env=??? parameter is required'
+if DIRECTORY is None:
+    raise '--dir=??? parameter is required'
 
 def config(CONFIG):
     auth = oss2.Auth(CONFIG['id'], CONFIG['key'])
@@ -25,8 +33,6 @@ def config(CONFIG):
     BUCKET = oss2.Bucket(auth, 'http://' + CONFIG['host'], CONFIG['bucket'])
 
 def sync():
-    if DIRECTORY is None:
-        raise '--dir=??? parameter is required'
 
     keys = []
     for root, dirs, files in os.walk(SEAT):
@@ -82,7 +88,7 @@ def show_log():
     echo(failed_files) 
 
 if __name__ == '__main__':
-    config(settings.QA_CN)
+    config(settings.__getattribute__(ENV))
     # traverse_files()
     sync()
     show_log()
