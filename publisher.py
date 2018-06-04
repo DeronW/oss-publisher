@@ -4,13 +4,14 @@ import settings
 import oss2
 import shutil
 
-from IPython import embed
+# from IPython import embed
 
 BUCKET = None
 COVER = False
 DIRECTORY = None
 ENV = None
 PREFIX = None
+DRY_RUN = False
 
 success_files = []
 covered_files = []
@@ -20,12 +21,15 @@ failed_files = []
 for i in sys.argv:
     if i == '--cover':
         COVER = True
+    if i.startswith('--dry-run'):
+        DRY_RUN = True
     if i.startswith('--dir='):
         DIRECTORY = i[6:]
     if i.startswith('--env='):
         ENV = i[6:]
     if i.startswith('--prefix='):
         PREFIX = i[9:]
+
 
 if ENV is None:
     raise '--env=??? parameter is required'
@@ -63,7 +67,7 @@ def upload(key, fp):
     global success_files
     global failed_files
 
-    if BUCKET.put_object_from_file(key, fp):
+    if DRY_RUN or BUCKET.put_object_from_file(key, fp):
         success_files.append(key)
     else:
         failed_files.append(key)
