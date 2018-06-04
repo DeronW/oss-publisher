@@ -4,11 +4,13 @@ import settings
 import oss2
 import shutil
 
+from IPython import embed
+
 BUCKET = None
 COVER = False
-SEAT = './seat/'
 DIRECTORY = None
 ENV = None
+PREFIX = None
 
 success_files = []
 covered_files = []
@@ -22,6 +24,8 @@ for i in sys.argv:
         DIRECTORY = i[6:]
     if i.startswith('--env='):
         ENV = i[6:]
+    if i.startswith('--prefix='):
+        PREFIX = i[9:]
 
 if ENV is None:
     raise '--env=??? parameter is required'
@@ -36,15 +40,13 @@ def config(CONFIG):
 def sync():
 
     keys = []
-    for root, dirs, files in os.walk(SEAT):
+    for root, _, files in os.walk(DIRECTORY):
         for name in files:
-            k = os.path.join(root, name).replace(SEAT, '', 1)
-            if k.startswith(DIRECTORY):
-                keys.append(k)
+            keys.append((name, os.path.join(root, name)))
 
-    for key in keys:
+    for (key, fp) in keys:
         if check(key):
-            upload(key)
+            upload(key, fp)
 
 def check(key):
     global duplicated_files
@@ -57,11 +59,11 @@ def check(key):
             return False
     return True
 
-def upload(key):
+def upload(key, fp):
     global success_files
     global failed_files
 
-    if BUCKET.put_object_from_file(key, os.path.join(SEAT, key)):
+    if BUCKET.put_object_from_file(key, fp):
         success_files.append(key)
     else:
         failed_files.append(key)
@@ -90,7 +92,7 @@ def show_log():
     echo(failed_files)
 
 def clean():
-    path = os.path.join(SEAT, DIRECTORY)
+    path = os.path.join(DIRECTORY)
     shutil.rmtree(path)
     print('Clean up: %s' % path)
 
@@ -102,8 +104,6 @@ def main():
         show_log()
     except Exception as e:
         raise e
-    finally:
-        clean()
 
 if __name__ == '__main__':
     main()

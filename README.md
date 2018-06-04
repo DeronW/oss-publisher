@@ -1,6 +1,6 @@
 # Ali OSS upload files
 
-depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/aliyun/aliyun-oss-python-sdk)
+Depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/aliyun/aliyun-oss-python-sdk)
 
 ### requirements
 
@@ -22,7 +22,7 @@ depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/a
 2. 把准备好的目录放在 seat 目录下
 3. 执行上传命令
     
-    python publisher.py --env=xxx --dir=xxx [--cover]
+    python publisher.py --env=xxx --dir=xxx [--prefix=xxx] [--cover]
 
 4. 等待执行
 5. 结束
@@ -30,5 +30,12 @@ depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/a
 参数说明
 
 * --env  [必填] 要上传到什么环境 PROD_EN | PROD_CN | QA_EN ...
-* --dir     [必填] 要上传的目录名称
+* --dir     [必填] 要上传的目录名称, 必须是完整路径
 * --cover   [选填] 默认false, 是否覆盖重名文件
+* --prefix  [选填] 默认 '' , 是否给文件添加访问路径前缀
+
+文件访问路径:
+https://oss-cn-beijing.aliyuncs.com/{bucket}//{key}
+
+example
+https://oss-cn-beijing.aliyuncs.com/bj-mc-prod-asset/mc-official/images/index/tech-text-card-icon.png
