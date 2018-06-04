@@ -46,7 +46,7 @@ def sync():
     keys = []
     for root, _, files in os.walk(DIRECTORY):
         for name in files:
-            keys.append((name, os.path.join(root, name)))
+            keys.append((PREFIX + name, os.path.join(root, name)))
 
     for (key, fp) in keys:
         if check(key):
