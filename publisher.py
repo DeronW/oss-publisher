@@ -128,6 +128,10 @@ def clean():
     print('Clean up: %s' % path)
 
 def main():
+    print("==========================")
+    print("Start publish static files to Ali OSS")
+    print("Bucket: %s, prefix: %s, cover: %s, " % (BUCKET, PREFIX, COVER))
+    print("==========================")
     try:
         config(settings.__getattribute__(ENV))
         # traverse_files()
