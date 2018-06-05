@@ -42,11 +42,12 @@ def config(CONFIG):
     BUCKET = oss2.Bucket(auth, 'http://' + CONFIG['host'], CONFIG['bucket'])
 
 def sync():
-
     keys = []
     for root, _, files in os.walk(DIRECTORY):
         for name in files:
-            keys.append((PREFIX + name, os.path.join(root, name)))
+            fp = os.path.join(root, name)
+            key = PREFIX + fp.replace(DIRECTORY, '', 1)
+            keys.append((key, fp))
 
     for (key, fp) in keys:
         if check(key):
