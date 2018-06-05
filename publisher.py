@@ -12,11 +12,14 @@ DIRECTORY = None
 ENV = None
 PREFIX = None
 DRY_RUN = False
+EXCLUDE_EXT = []
+ONLY_EXT = []
 
 success_files = []
 covered_files = []
 duplicated_files = []
 failed_files = []
+excluded_files = []
 
 for i in sys.argv:
     if i == '--cover':
@@ -29,6 +32,10 @@ for i in sys.argv:
         ENV = i[6:]
     if i.startswith('--prefix='):
         PREFIX = i[9:]
+    if i.startswith('--only='):
+        ONLY_EXT = i[7:].split(',')
+    if i.startswith('--exclude='):
+        EXCLUDE_EXT = i[10:].split(',')
 
 
 if ENV is None:
@@ -42,6 +49,9 @@ def config(CONFIG):
     BUCKET = oss2.Bucket(auth, 'http://' + CONFIG['host'], CONFIG['bucket'])
 
 def sync():
+
+    global excluded_files
+
     keys = []
     for root, _, files in os.walk(DIRECTORY):
         for name in files:
@@ -50,8 +60,21 @@ def sync():
             keys.append((key, fp))
 
     for (key, fp) in keys:
-        if check(key):
-            upload(key, fp)
+        excluded_key = None
+
+        for ext in EXCLUDE_EXT:
+            if fp.endswith(ext):
+                excluded_key = key
+
+        for ext in ONLY_EXT:
+            if not fp.endswith(ext):
+                excluded_key = key
+
+        if excluded_key:
+            excluded_files.append(key)
+        else:
+            if check(key):
+                upload(key, fp)
 
 def check(key):
     global duplicated_files
@@ -86,6 +109,9 @@ def show_log():
 
     print('success files: %s' % len(success_files))
     echo(success_files)
+
+    print('excluded files: %s' % len(excluded_files))
+    echo(excluded_files)
 
     print('covered files: %s' % len(covered_files))
     echo(covered_files)

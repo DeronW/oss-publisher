@@ -33,6 +33,8 @@ Depend on [https://github.com/aliyun/aliyun-oss-python-sdk](https://github.com/a
 * --dir     [必填] 要上传的目录名称, 必须是完整路径
 * --cover   [选填] 默认false, 是否覆盖重名文件
 * --prefix  [选填] 默认 '' , 是否给文件添加访问路径前缀
+* --exclude [选填] 默认空, 排除不上传的文件的后缀名 --exclude=html,jade
+* --only    [选填] 默认空, 只上传具有指定后缀名的文件  --only=html
 
 文件访问路径:
 https://oss-cn-beijing.aliyuncs.com/{bucket}//{key}
