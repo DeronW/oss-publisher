@@ -130,7 +130,7 @@ def clean():
 def main():
     print("==========================")
     print("Start publish static files to Ali OSS")
-    print("Bucket: %s, prefix: %s, cover: %s, " % (BUCKET, PREFIX, COVER))
+    print("ENV: %s, prefix: %s, cover: %s, dir: %s" % (ENV, PREFIX, COVER, DIRECTORY))
     print("==========================")
     try:
         config(settings.__getattribute__(ENV))
