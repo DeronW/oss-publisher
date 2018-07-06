@@ -56,8 +56,10 @@ def sync():
     for root, _, files in os.walk(DIRECTORY):
         for name in files:
             fp = os.path.join(root, name)
-            key = PREFIX + fp.replace(DIRECTORY, '', 1)
-            keys.append((key, fp))
+            key = fp.replace(DIRECTORY, '', 1)
+            if key.startswith('/.git/'):
+                continue
+            keys.append((PREFIX + key, fp))
 
     for (key, fp) in keys:
         excluded_key = None
@@ -71,7 +73,7 @@ def sync():
                 excluded_key = key
 
         # if a file start with a dot, we should't upload it to OSS
-        if key.startsWith('.'):
+        if key.startswith(PREFIX + '/.'):
             excluded_key = key
 
         if excluded_key:
@@ -135,6 +137,8 @@ def main():
     print("====================================================")
     print("Start publish static files to Ali OSS")
     print("ENV: %s, prefix: %s, cover: %s, dir: %s" % (ENV, PREFIX, COVER, DIRECTORY))
+    if DRY_RUN:
+        print("Don't worry, this is a dry-run action")
     print("====================================================")
     try:
         config(settings.__getattribute__(ENV))
