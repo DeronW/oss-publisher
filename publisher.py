@@ -70,6 +70,10 @@ def sync():
             if not fp.endswith(ext):
                 excluded_key = key
 
+        # if a file start with a dot, we should't upload it to OSS
+        if key.startsWith('.'):
+            excluded_key = key
+
         if excluded_key:
             excluded_files.append(key)
         else:
@@ -128,10 +132,10 @@ def clean():
     print('Clean up: %s' % path)
 
 def main():
-    print("==========================")
+    print("====================================================")
     print("Start publish static files to Ali OSS")
     print("ENV: %s, prefix: %s, cover: %s, dir: %s" % (ENV, PREFIX, COVER, DIRECTORY))
-    print("==========================")
+    print("====================================================")
     try:
         config(settings.__getattribute__(ENV))
         # traverse_files()
